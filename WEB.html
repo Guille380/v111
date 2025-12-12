@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guillermo Molina - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #5eb3f6 0%, #a0d8f1 40%, #7ec850 60%, #4a9c2d 100%);
+            height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: radial-gradient(ellipse at bottom, #7ec850 0%, #5ea83d 40%, #4a9c2d 100%);
+            clip-path: ellipse(150% 60% at 50% 100%);
+        }
+
+        .desktop {
+            height: calc(100vh - 48px);
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon {
+            width: 80px;
+            text-align: center;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-image {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border-radius: 12px;
+            margin: 0 auto 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .icon-label {
+            color: white;
+            font-size: 11px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            font-weight: 600;
+        }
+
+        .window {
+            position: absolute;
+            background: #1e293b;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            min-width: 400px;
+            min-height: 300px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .window.active {
+            display: flex;
+            z-index: 1000;
+        }
+
+        .window-header {
+            background: #0f172a;
+            color: white;
+            padding: 12px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .window-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-minimize { background: #fbbf24; }
+        .btn-maximize { background: #34d399; }
+        .btn-close { background: #f87171; }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            color: #e2e8f0;
+        }
+
+        .window-content h2,
+        .window-content h3,
+        .window-content h4 {
+            color: #f1f5f9;
+        }
+
+        .window-content p {
+            color: #cbd5e1;
+        }
+
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, #3a7bc8 0%, #2858a8 100%);
+            border-top: 1px solid #5a9dd8;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            gap: 5px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-btn {
+            width: 100px;
+            height: 36px;
+            background: linear-gradient(to bottom, #4caf50 0%, #45a049 100%);
+            border: 1px solid #2d6b2f;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(to bottom, #5bc75f 0%, #4caf50 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 3px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-btn:active {
+            background: linear-gradient(to bottom, #45a049 0%, #3d8b40 100%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .taskbar-apps {
+            display: flex;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .taskbar-app {
+            padding: 6px 12px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            color: white;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .taskbar-app:hover {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+        }
+
+        .time {
+            color: white;
+            font-size: 11px;
+            padding: 4px 10px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3));
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .start-menu {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            width: 300px;
+            background: linear-gradient(to bottom, #3a7bc8 0%, #2858a8 100%);
+            border: 2px solid #5a9dd8;
+            border-radius: 8px 8px 0 0;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+        }
+
+        .start-menu.active {
+            display: flex;
+        }
+
+        .start-menu-header {
+            background: linear-gradient(to right, #2858a8, #1e4a8a);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .start-menu-items {
+            padding: 10px;
+        }
+
+        .start-menu-item {
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+            font-size: 13px;
+        }
+
+        .start-menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .start-menu-footer {
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .start-menu-footer button {
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .start-menu-footer button:hover {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+        }
+
+        .skill-bar {
+            margin: 15px 0;
+        }
+
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            align-items: center;
+        }
+
+        .skill-level-text {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .skill-level-text.basico {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .skill-level-text.avanzado {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .skill-level-text.profesional {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .skill-progress {
+            height: 28px;
+            background: #0f172a;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid #334155;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .skill-progress::before,
+        .skill-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #334155;
+            z-index: 10;
+        }
+
+        .skill-progress::before {
+            left: 33.33%;
+        }
+
+        .skill-progress::after {
+            left: 66.66%;
+        }
+
+        .skill-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+            border-radius: 12px 12px 0 0;
+        }
+
+        .skill-fill.color-1 {
+            background: linear-gradient(to right, #ec4899, #f43f5e);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+
+        .skill-fill.color-2 {
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .skill-fill.color-3 {
+            background: linear-gradient(to right, #06b6d4, #3b82f6);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .skill-fill.color-4 {
+            background: linear-gradient(to right, #10b981, #14b8a6);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .skill-fill.color-5 {
+            background: linear-gradient(to right, #f59e0b, #f97316);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .skill-fill.color-6 {
+            background: linear-gradient(to right, #eab308, #84cc16);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+        }
+
+        .skill-fill.color-7 {
+            background: linear-gradient(to right, #d946ef, #a855f7);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+        }
+
+        .skill-fill.color-8 {
+            background: linear-gradient(to right, #06b6d4, #0891b2);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .contact-info {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #334155;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .cert-list {
+            list-style: none;
+        }
+
+        .cert-item {
+            background: #0f172a;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .experience-card {
+            background: #0f172a;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #06b6d4;
+        }
+
+        .exp-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 5px;
+        }
+
+        .exp-date {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            margin: 20px 0;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop" id="desktop">
+        <div class="icon" onclick="openWindow('about')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="10" r="5" fill="#4a90e2"/>
+                    <path d="M8 26c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#4a90e2"/>
+                </svg>
+            </div>
+            <div class="icon-label">Sobre Mí</div>
+        </div>
+        <div class="icon" onclick="openWindow('skills')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="6" width="20" height="20" rx="2" fill="#5cb85c"/>
+                    <path d="M12 16l3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="icon-label">Habilidades</div>
+        </div>
+        <div class="icon" onclick="openWindow('experience')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="10" width="20" height="14" rx="2" fill="#f0ad4e"/>
+                    <rect x="14" y="6" width="4" height="4" fill="#f0ad4e"/>
+                    <circle cx="12" cy="16" r="1.5" fill="white"/>
+                    <circle cx="16" cy="16" r="1.5" fill="white"/>
+                    <circle cx="20" cy="16" r="1.5" fill="white"/>
+                </svg>
+            </div>
+            <div class="icon-label">Experiencia</div>
+        </div>
+        <div class="icon" onclick="openWindow('certs')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="8" width="20" height="16" rx="1" fill="#d9534f"/>
+                    <circle cx="16" cy="16" r="4" fill="#ffd700"/>
+                    <path d="M16 12v8M12 16h8" stroke="#d9534f" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <div class="icon-label">Certificaciones</div>
+        </div>
+        <div class="icon" onclick="openWindow('contact')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="10" width="20" height="14" rx="2" fill="#5bc0de"/>
+                    <path d="M6 10l10 8 10-8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="icon-label">Contacto</div>
+        </div>
+    </div>
+
+    <!-- Ventana Sobre Mí -->
+    <div class="window" id="about" style="width: 600px; top: 50px; left: 50px;">
+        <div class="window-header">
+            <span class="window-title">📄 Sobre Mí</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('about')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('about')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('about')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h2 style="color: #f1f5f9; margin-bottom: 15px;">Guillermo Molina Martinez</h2>
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Ingeniero Telemático</h3>
+            <p style="line-height: 1.6; color: #cbd5e1;">
+                Ingeniero en Telemática con experiencia en Power BI, Inteligencia Artificial, 
+                Machine Learning y desarrollo web y móvil. Me especializo en crear soluciones 
+                basadas en datos, optimizando procesos y desarrollando aplicaciones funcionales 
+                y de alto rendimiento.
+            </p>
+            <p style="line-height: 1.6; color: #cbd5e1; margin-top: 15px;">
+                Siempre buscando nuevas oportunidades para seguir creciendo y aportar valor 
+                en el ámbito tecnológico.
+            </p>
+            <div style="margin-top: 20px; padding: 15px; background: #0f172a; border-radius: 8px; border: 1px solid #334155;">
+                <h4 style="margin-bottom: 10px; color: #f1f5f9;">🎓 Educación</h4>
+                <p style="color: #e2e8f0;"><strong>Universidad Politécnica de Cartagena</strong></p>
+                <p style="color: #94a3b8; font-size: 14px;">Grado en Ingeniería Telemática (2020 - 2025)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana Habilidades -->
+    <div class="window" id="skills" style="width: 700px; top: 80px; left: 150px;">
+        <div class="window-header">
+            <span class="window-title">💻 Habilidades Técnicas</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('skills')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('skills')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('skills')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Conocimientos Técnicos</h3>
+            
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>Machine Learning & IA</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-1" style="width: 55%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>Power BI</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-2" style="width: 60%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>Python</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-3" style="width: 58%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>React</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-4" style="width: 52%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>SQL</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-5" style="width: 62%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-bar">
+                <div class="skill-label">
+                    <span><strong>AWS</strong></span>
+                    <span class="skill-level-text avanzado">Avanzado</span>
+                </div>
+                <div class="skill-progress">
+                    <div class="skill-fill color-6" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana Experiencia -->
+    <div class="window" id="experience" style="width: 650px; top: 100px; left: 250px;">
+        <div class="window-header">
+            <span class="window-title">💼 Experiencia Profesional</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('experience')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('experience')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('experience')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Dinapsis</h3>
+            
+            <div class="experience-card">
+                <div class="exp-title">🚀 Planificador / Ingeniero de Data e IA</div>
+                <div class="exp-date">Julio 2025 - Presente (6 meses)</div>
+                <p style="color: #cbd5e1; line-height: 1.6;">
+                    Desarrollo de soluciones inteligentes, combinando soluciones con IA, 
+                    obteniendo los datos a consultar utilizando Python y otras herramientas. 
+                    En algunos casos desarrollando Power BI para el consumo de dichos datos.
+                </p>
+            </div>
+
+            <div class="experience-card">
+                <div class="exp-title">🎯 Ingeniero en prácticas</div>
+                <div class="exp-date">Febrero 2025 - Presente (11 meses)</div>
+                <p style="color: #cbd5e1; line-height: 1.6;">
+                    Desarrollo de herramientas de digitalización, automatización de procesos 
+                    y análisis de datos mediante la creación de Business Intelligence.
+                </p>
+            </div>
+
+            <div style="margin-top: 25px; padding: 15px; background: #0f172a; border-radius: 8px; border: 1px solid #334155;">
+                <h4 style="color: #3b82f6; margin-bottom: 10px;">📍 Ubicación</h4>
+                <p style="color: #cbd5e1;">Cartagena, Región de Murcia, España</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana Certificaciones -->
+    <div class="window" id="certs" style="width: 600px; top: 120px; left: 350px;">
+        <div class="window-header">
+            <span class="window-title">🎓 Certificaciones</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('certs')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('certs')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('certs')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Certificaciones Profesionales</h3>
+            <ul class="cert-list">
+                <li class="cert-item">
+                    <strong style="color: #f1f5f9;">AWS Certified Solutions Architect - Associate</strong>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Amazon Web Services</p>
+                </li>
+                <li class="cert-item">
+                    <strong style="color: #f1f5f9;">Bases de datos SQL en Microsoft Fabric</strong>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Microsoft</p>
+                </li>
+                <li class="cert-item">
+                    <strong style="color: #f1f5f9;">Aprovechar la IA generativa para la gestión de proyectos</strong>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Gestión de Proyectos + IA</p>
+                </li>
+                <li class="cert-item">
+                    <strong style="color: #f1f5f9;">Introducción al Reglamento sobre Inteligencia Artificial de la UE</strong>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">Normativa Europea</p>
+                </li>
+                <li class="cert-item">
+                    <strong style="color: #f1f5f9;">Fundamentos de la inteligencia artificial generativa</strong>
+                    <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">IA Generativa</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Ventana Contacto -->
+    <div class="window" id="contact" style="width: 550px; top: 140px; left: 450px;">
+        <div class="window-header">
+            <span class="window-title">📧 Contacto</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('contact')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('contact')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('contact')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Información de Contacto</h3>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span style="font-size: 24px;">📱</span>
+                    <div>
+                        <strong style="color: #f1f5f9;">Móvil</strong><br>
+                        <a href="tel:617135923" style="color: #3b82f6; text-decoration: none;">617 135 923</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span style="font-size: 24px;">✉️</span>
+                    <div>
+                        <strong style="color: #f1f5f9;">Email</strong><br>
+                        <a href="mailto:guillermomm007@gmail.com" style="color: #3b82f6; text-decoration: none;">guillermomm007@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span style="font-size: 24px;">💼</span>
+                    <div>
+                        <strong style="color: #f1f5f9;">LinkedIn</strong><br>
+                        <a href="https://www.linkedin.com/in/guillermo-molina-martinez-431860211" target="_blank" style="color: #3b82f6; text-decoration: none;">Ver perfil</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span style="font-size: 24px;">📍</span>
+                    <div>
+                        <strong style="color: #f1f5f9;">Ubicación</strong><br>
+                        <span style="color: #cbd5e1;">Blanca, Región de Murcia, España</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de tareas -->
+    <div class="taskbar">
+        <button class="start-btn" onclick="toggleStartMenu()">
+            <span style="font-size: 18px;">⊞</span> Inicio
+        </button>
+        <div class="taskbar-apps" id="taskbarApps"></div>
+        <div style="flex: 1;"></div>
+        <div class="time" id="clock"></div>
+    </div>
+
+    <!-- Menú Inicio -->
+    <div class="start-menu" id="startMenu">
+        <div class="start-menu-header">
+            Guillermo Molina Martinez
+        </div>
+        <div class="start-menu-items">
+            <div class="start-menu-item" onclick="openWindow('about'); toggleStartMenu();">
+                <span style="font-size: 20px;">👤</span>
+                <span>Sobre Mí</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('skills'); toggleStartMenu();">
+                <span style="font-size: 20px;">💻</span>
+                <span>Habilidades</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('experience'); toggleStartMenu();">
+                <span style="font-size: 20px;">💼</span>
+                <span>Experiencia</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('certs'); toggleStartMenu();">
+                <span style="font-size: 20px;">🎓</span>
+                <span>Certificaciones</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('contact'); toggleStartMenu();">
+                <span style="font-size: 20px;">📧</span>
+                <span>Contacto</span>
+            </div>
+        </div>
+        <div class="start-menu-footer">
+            <button onclick="alert('¡Gracias por visitar mi portfolio!')">📌 Info</button>
+            <button onclick="window.location.reload()">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let activeWindow = null;
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        function openWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.classList.add('active');
+            
+            if (activeWindow && activeWindow !== window) {
+                activeWindow.style.zIndex = 999;
+            }
+            window.style.zIndex = 1000;
+            activeWindow = window;
+            
+            updateTaskbar();
+        }
+
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.classList.remove('active');
+            updateTaskbar();
+        }
+
+        function minimizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.display = 'none';
+            setTimeout(() => {
+                window.style.display = 'flex';
+                window.classList.remove('active');
+            }, 10);
+            updateTaskbar();
+        }
+
+        function maximizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            if (window.style.width === '100%') {
+                window.style.width = '';
+                window.style.height = '';
+                window.style.top = '';
+                window.style.left = '';
+            } else {
+                window.style.width = '100%';
+                window.style.height = 'calc(100vh - 48px)';
+                window.style.top = '0';
+                window.style.left = '0';
+            }
+        }
+
+        function updateTaskbar() {
+            const taskbarApps = document.getElementById('taskbarApps');
+            taskbarApps.innerHTML = '';
+            
+            const windows = document.querySelectorAll('.window.active');
+            windows.forEach(window => {
+                const title = window.querySelector('.window-title').textContent;
+                const btn = document.createElement('div');
+                btn.className = 'taskbar-app';
+                btn.textContent = title;
+                btn.onclick = () => {
+                    window.style.display = 'flex';
+                    window.classList.add('active');
+                    window.style.zIndex = 1000;
+                };
+                taskbarApps.appendChild(btn);
+            });
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            const date = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById('clock').innerHTML = `${time}<br>${date}`;
+        }
+
+        // Drag functionality
+        document.querySelectorAll('.window-header').forEach(header => {
+            header.addEventListener('mousedown', dragStart);
+        });
+
+        function dragStart(e) {
+            if (e.target.classList.contains('window-btn')) return;
+            
+            const window = e.target.closest('.window');
+            activeWindow = window;
+            window.style.zIndex = 1000;
+            
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            if (e.target.closest('.window-header')) {
+                isDragging = true;
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', dragEnd);
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+                
+                activeWindow.style.left = currentX + 'px';
+                activeWindow.style.top = currentY + 'px';
+            }
+        }
+
+        function dragEnd() {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', dragEnd);
+        }
+
+        function toggleStartMenu() {
+            const startMenu = document.getElementById('startMenu');
+            startMenu.classList.toggle('active');
+        }
+
+        // Close start menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const startMenu = document.getElementById('startMenu');
+            const startBtn = document.querySelector('.start-btn');
+            
+            if (!startMenu.contains(e.target) && !startBtn.contains(e.target)) {
+                startMenu.classList.remove('active');
+            }
+        });
+
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Auto-open about window on load
+        setTimeout(() => openWindow('about'), 500);
+    </script>
+</body>
+</html>
