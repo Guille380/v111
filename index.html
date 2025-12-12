@@ -42,12 +42,7 @@
             text-align: center;
             margin: 10px;
             cursor: pointer;
-            transition: transform 0.2s;
             display: inline-block;
-        }
-
-        .icon:hover {
-            transform: scale(1.1);
         }
 
         .icon-image {
@@ -673,6 +668,113 @@
                 height: 45px;
             }
         }
+
+        /* Game Canvas */
+        #gameCanvas {
+            background: #000;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #334155;
+            border-radius: 4px;
+        }
+
+        .game-info {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .game-controls {
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .game-btn {
+            padding: 10px 20px;
+            background: linear-gradient(to bottom, #3b82f6, #2563eb);
+            border: 1px solid #1d4ed8;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.2s;
+        }
+
+        .game-btn:hover {
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+        }
+
+        .game-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Text Editor */
+        #textEditor {
+            width: 100%;
+            height: 400px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 2px solid #334155;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        #textEditor:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .editor-btn {
+            padding: 8px 16px;
+            background: linear-gradient(to bottom, #10b981, #059669);
+            border: 1px solid #047857;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .editor-btn:hover {
+            background: linear-gradient(to bottom, #34d399, #10b981);
+        }
+
+        .editor-btn.clear {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+            border-color: #b91c1c;
+        }
+
+        .editor-btn.clear:hover {
+            background: linear-gradient(to bottom, #f87171, #ef4444);
+        }
+
+        .editor-info {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -725,6 +827,28 @@
                 </svg>
             </div>
             <div class="icon-label">Contacto</div>
+        </div>
+        <div class="icon" onclick="openWindow('game')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="12" width="20" height="12" rx="2" fill="#9b59b6"/>
+                    <circle cx="11" cy="18" r="2" fill="white"/>
+                    <rect x="19" y="16" width="2" height="2" fill="#e74c3c"/>
+                    <rect x="22" y="16" width="2" height="2" fill="#e74c3c"/>
+                </svg>
+            </div>
+            <div class="icon-label">Space Invaders</div>
+        </div>
+        <div class="icon" onclick="openWindow('notepad')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="8" y="6" width="16" height="20" rx="1" fill="#ecf0f1"/>
+                    <line x1="11" y1="12" x2="21" y2="12" stroke="#3498db" stroke-width="1.5"/>
+                    <line x1="11" y1="16" x2="21" y2="16" stroke="#3498db" stroke-width="1.5"/>
+                    <line x1="11" y1="20" x2="18" y2="20" stroke="#3498db" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <div class="icon-label">Editor de Texto</div>
         </div>
     </div>
 
@@ -965,6 +1089,55 @@
         </div>
     </div>
 
+    <!-- Ventana Space Invaders -->
+    <div class="window" id="game" style="width: 600px; top: 60px; left: 100px;">
+        <div class="window-header">
+            <span class="window-title">👾 Space Invaders</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('game')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('game')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('game')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="game-info">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Nivel: <span id="level">1</span></span>
+                    <span>Puntuación: <span id="score">0</span></span>
+                    <span>Vidas: <span id="lives">3</span></span>
+                </div>
+            </div>
+            <canvas id="gameCanvas" width="560" height="400"></canvas>
+            <div class="game-controls">
+                <p style="margin-bottom: 10px; color: #cbd5e1;">Usa las flechas ← → para moverte y ESPACIO para disparar</p>
+                <button class="game-btn" onclick="startGame()">Nuevo Juego</button>
+                <button class="game-btn" onclick="pauseGame()">Pausar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana Editor de Texto -->
+    <div class="window" id="notepad" style="width: 650px; top: 80px; left: 200px;">
+        <div class="window-header">
+            <span class="window-title">📝 Editor de Texto</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('notepad')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('notepad')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('notepad')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="editor-toolbar">
+                <button class="editor-btn" onclick="saveText()">💾 Guardar como TXT</button>
+                <button class="editor-btn clear" onclick="clearText()">🗑️ Limpiar</button>
+            </div>
+            <textarea id="textEditor" placeholder="Escribe algo aquí..."></textarea>
+            <div class="editor-info">
+                Escribe tu texto y haz clic en "Guardar como TXT" para descargarlo
+            </div>
+        </div>
+    </div>
+
     <!-- Barra de tareas -->
     <div class="taskbar">
         <button class="start-btn" onclick="toggleStartMenu()">
@@ -1000,6 +1173,14 @@
             <div class="start-menu-item" onclick="openWindow('contact'); toggleStartMenu();">
                 <span style="font-size: 20px;">📧</span>
                 <span>Contacto</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('game'); toggleStartMenu();">
+                <span style="font-size: 20px;">👾</span>
+                <span>Space Invaders</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('notepad'); toggleStartMenu();">
+                <span style="font-size: 20px;">📝</span>
+                <span>Editor de Texto</span>
             </div>
         </div>
         <div class="start-menu-footer">
@@ -1152,6 +1333,289 @@
 
         // Auto-open about window on load
         setTimeout(() => openWindow('about'), 500);
+
+        // ===== SPACE INVADERS GAME =====
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let gameRunning = false;
+        let gamePaused = false;
+        let score = 0;
+        let lives = 3;
+        let level = 1;
+        let animationId;
+        let alienSpeed = 1;
+        let alienShootChance = 0.01;
+
+        const player = { x: 270, y: 360, w: 40, h: 20, speed: 7 };
+        const bullets = [];
+        const aliens = [];
+        const alienBullets = [];
+        
+        // Controles con teclas presionadas
+        const keys = {};
+        let alienDirection = 1;
+        let alienMoveCounter = 0;
+
+        function createAliens() {
+            aliens.length = 0;
+            const rows = Math.min(4 + Math.floor(level / 2), 6);
+            const cols = Math.min(8 + Math.floor(level / 3), 10);
+            
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    aliens.push({
+                        x: col * 55 + 30,
+                        y: row * 40 + 30,
+                        w: 30,
+                        h: 30,
+                        alive: true
+                    });
+                }
+            }
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+            ctx.fillStyle = '#34d399';
+            ctx.fillRect(player.x + 15, player.y - 10, 10, 10);
+        }
+
+        function drawAliens() {
+            aliens.forEach(alien => {
+                if (alien.alive) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillRect(alien.x, alien.y, alien.w, alien.h);
+                    ctx.fillStyle = '#dc2626';
+                    ctx.fillRect(alien.x + 5, alien.y + 5, 8, 8);
+                    ctx.fillRect(alien.x + 17, alien.y + 5, 8, 8);
+                }
+            });
+        }
+
+        function drawBullets() {
+            ctx.fillStyle = '#fbbf24';
+            bullets.forEach(b => ctx.fillRect(b.x, b.y, 3, 10));
+            
+            ctx.fillStyle = '#f87171';
+            alienBullets.forEach(b => ctx.fillRect(b.x, b.y, 3, 10));
+        }
+
+        function moveAliens() {
+            alienMoveCounter++;
+            const moveSpeed = Math.max(30 - level * 2, 10);
+            
+            if (alienMoveCounter >= moveSpeed) {
+                alienMoveCounter = 0;
+                let shouldMoveDown = false;
+                
+                aliens.forEach(alien => {
+                    if (alien.alive) {
+                        alien.x += alienDirection * alienSpeed;
+                        if (alien.x <= 0 || alien.x >= canvas.width - alien.w) {
+                            shouldMoveDown = true;
+                        }
+                    }
+                });
+                
+                if (shouldMoveDown) {
+                    alienDirection *= -1;
+                    aliens.forEach(alien => {
+                        if (alien.alive) {
+                            alien.y += 20;
+                            // Game over si llegan abajo
+                            if (alien.y >= player.y) {
+                                gameRunning = false;
+                                lives = 0;
+                                document.getElementById('lives').textContent = lives;
+                                setTimeout(() => {
+                                    alert('¡Los aliens han invadido! Game Over\nNivel alcanzado: ' + level + '\nPuntuación final: ' + score);
+                                }, 100);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function updateGame() {
+            if (!gameRunning || gamePaused) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Movimiento fluido del jugador
+            if (keys['ArrowLeft'] && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keys['ArrowRight'] && player.x < canvas.width - player.w) {
+                player.x += player.speed;
+            }
+
+            // Mover aliens
+            moveAliens();
+
+            // Move bullets
+            bullets.forEach((b, i) => {
+                b.y -= 7;
+                if (b.y < 0) bullets.splice(i, 1);
+            });
+
+            const bulletSpeed = 4 + level * 0.3;
+            alienBullets.forEach((b, i) => {
+                b.y += bulletSpeed;
+                if (b.y > canvas.height) alienBullets.splice(i, 1);
+            });
+
+            // Alien shooting con más frecuencia según el nivel
+            if (Math.random() < alienShootChance) {
+                const aliveAliens = aliens.filter(a => a.alive);
+                if (aliveAliens.length > 0) {
+                    const shooter = aliveAliens[Math.floor(Math.random() * aliveAliens.length)];
+                    alienBullets.push({ x: shooter.x + 15, y: shooter.y + 30 });
+                }
+            }
+
+            // Check collisions
+            bullets.forEach((bullet, bi) => {
+                aliens.forEach(alien => {
+                    if (alien.alive &&
+                        bullet.x > alien.x && bullet.x < alien.x + alien.w &&
+                        bullet.y > alien.y && bullet.y < alien.y + alien.h) {
+                        alien.alive = false;
+                        bullets.splice(bi, 1);
+                        score += 10 * level;
+                        document.getElementById('score').textContent = score;
+                    }
+                });
+            });
+
+            // Check player hit
+            alienBullets.forEach((bullet, i) => {
+                if (bullet.x > player.x && bullet.x < player.x + player.w &&
+                    bullet.y > player.y && bullet.y < player.y + player.h) {
+                    alienBullets.splice(i, 1);
+                    lives--;
+                    document.getElementById('lives').textContent = lives;
+                    if (lives <= 0) {
+                        gameRunning = false;
+                        setTimeout(() => {
+                            alert('Game Over!\nNivel alcanzado: ' + level + '\nPuntuación final: ' + score);
+                        }, 100);
+                    }
+                }
+            });
+
+            // Check victory
+            const aliveAliens = aliens.filter(a => a.alive);
+            if (aliveAliens.length === 0) {
+                nextLevel();
+                return;
+            }
+
+            drawPlayer();
+            drawAliens();
+            drawBullets();
+
+            animationId = requestAnimationFrame(updateGame);
+        }
+
+        function nextLevel() {
+            level++;
+            alienSpeed = 1 + (level - 1) * 0.3;
+            alienShootChance = Math.min(0.01 + (level - 1) * 0.003, 0.03);
+            bullets.length = 0;
+            alienBullets.length = 0;
+            alienDirection = 1;
+            alienMoveCounter = 0;
+            player.x = 270;
+            
+            document.getElementById('level').textContent = level;
+            
+            setTimeout(() => {
+                alert('¡Nivel ' + level + ' completado!\nPuntuación: ' + score + '\n\n¡Preparate para el siguiente nivel!');
+                createAliens();
+                updateGame();
+            }, 100);
+        }
+
+        function startGame() {
+            gameRunning = true;
+            gamePaused = false;
+            score = 0;
+            lives = 3;
+            level = 1;
+            alienSpeed = 1;
+            alienShootChance = 0.01;
+            alienDirection = 1;
+            alienMoveCounter = 0;
+            bullets.length = 0;
+            alienBullets.length = 0;
+            player.x = 270;
+            document.getElementById('score').textContent = score;
+            document.getElementById('lives').textContent = lives;
+            document.getElementById('level').textContent = level;
+            createAliens();
+            updateGame();
+        }
+
+        function pauseGame() {
+            gamePaused = !gamePaused;
+            if (!gamePaused && gameRunning) {
+                updateGame();
+            }
+        }
+
+        // Game controls - Presionar tecla
+        document.addEventListener('keydown', (e) => {
+            // Prevenir scroll solo para las flechas
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                e.preventDefault();
+            }
+
+            keys[e.key] = true;
+
+            // Disparar con espacio (solo si el juego está activo)
+            if (e.key === ' ' && gameRunning && !gamePaused) {
+                e.preventDefault();
+                bullets.push({ x: player.x + player.w / 2, y: player.y });
+            }
+        });
+
+        // Game controls - Soltar tecla
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // ===== TEXT EDITOR FUNCTIONS =====
+        function saveText() {
+            const text = document.getElementById('textEditor').value;
+            if (!text.trim()) {
+                alert('El editor está vacío. Escribe algo antes de guardar.');
+                return;
+            }
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'documento_' + new Date().getTime() + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearText() {
+            if (confirm('¿Estás seguro de que quieres borrar todo el texto?')) {
+                document.getElementById('textEditor').value = '';
+            }
+        }
+
+        // Prevenir que la barra espaciadora dispare cuando estás en el editor
+        document.getElementById('textEditor').addEventListener('keydown', (e) => {
+            e.stopPropagation();
+        });
     </script>
 </body>
 </html>
