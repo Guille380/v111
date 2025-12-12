@@ -467,6 +467,212 @@
         canvas {
             max-width: 100%;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body::before {
+                height: 50%;
+            }
+
+            .desktop {
+                padding: 10px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 15px;
+                height: calc(100vh - 50px);
+                overflow-y: auto;
+            }
+
+            .icon {
+                width: 100%;
+                margin: 0;
+            }
+
+            .icon-image {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+
+            .icon-label {
+                font-size: 10px;
+            }
+
+            .window {
+                width: 95% !important;
+                height: 80vh !important;
+                top: 10% !important;
+                left: 2.5% !important;
+                min-width: unset;
+                min-height: unset;
+            }
+
+            .window-header {
+                padding: 10px;
+            }
+
+            .window-title {
+                font-size: 12px;
+            }
+
+            .window-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+
+            .window-content {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .window-content h2 {
+                font-size: 20px;
+            }
+
+            .window-content h3 {
+                font-size: 18px;
+            }
+
+            .window-content h4 {
+                font-size: 16px;
+            }
+
+            .taskbar {
+                height: 50px;
+                padding: 0 3px;
+                flex-wrap: wrap;
+            }
+
+            .start-btn {
+                width: 80px;
+                height: 32px;
+                font-size: 12px;
+                padding: 0 8px;
+            }
+
+            .taskbar-apps {
+                flex-wrap: wrap;
+                max-width: calc(100% - 180px);
+            }
+
+            .taskbar-app {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+
+            .time {
+                font-size: 9px;
+                padding: 3px 6px;
+            }
+
+            .start-menu {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .start-menu-header {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .start-menu-item {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .start-menu-footer button {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+
+            .skill-bar {
+                margin: 12px 0;
+            }
+
+            .skill-label {
+                font-size: 12px;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .skill-level-text {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+
+            .skill-progress {
+                height: 24px;
+            }
+
+            .contact-info {
+                padding: 12px;
+            }
+
+            .contact-item {
+                font-size: 13px;
+            }
+
+            .cert-item {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .experience-card {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .exp-title {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .desktop {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 10px;
+            }
+
+            .icon-image {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+
+            .icon-label {
+                font-size: 9px;
+            }
+
+            .window-content {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .start-btn {
+                width: 70px;
+                font-size: 11px;
+            }
+
+            .taskbar-apps {
+                max-width: calc(100% - 150px);
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .desktop {
+                height: calc(100vh - 45px);
+            }
+
+            .window {
+                height: 85vh !important;
+            }
+
+            .taskbar {
+                height: 45px;
+            }
+        }
     </style>
 </head>
 <body>
