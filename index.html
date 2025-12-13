@@ -775,6 +775,80 @@
             color: #94a3b8;
             text-align: center;
         }
+
+        /* Calculator */
+        .calculator-display {
+            width: 100%;
+            background: #0f172a;
+            color: #2ecc71;
+            font-size: 32px;
+            font-family: 'Courier New', monospace;
+            text-align: right;
+            padding: 20px;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            padding: 20px;
+            background: linear-gradient(to bottom, #475569, #334155);
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calc-btn:hover {
+            background: linear-gradient(to bottom, #64748b, #475569);
+            transform: translateY(-2px);
+        }
+
+        .calc-btn:active {
+            transform: translateY(0);
+        }
+
+        .calc-btn.operator {
+            background: linear-gradient(to bottom, #3b82f6, #2563eb);
+            border-color: #1d4ed8;
+        }
+
+        .calc-btn.operator:hover {
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+        }
+
+        .calc-btn.equals {
+            background: linear-gradient(to bottom, #10b981, #059669);
+            border-color: #047857;
+            grid-column: span 2;
+        }
+
+        .calc-btn.equals:hover {
+            background: linear-gradient(to bottom, #34d399, #10b981);
+        }
+
+        .calc-btn.clear {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+            border-color: #b91c1c;
+        }
+
+        .calc-btn.clear:hover {
+            background: linear-gradient(to bottom, #f87171, #ef4444);
+        }
     </style>
 </head>
 <body>
@@ -849,6 +923,21 @@
                 </svg>
             </div>
             <div class="icon-label">Editor de Texto</div>
+        </div>
+        <div class="icon" onclick="openWindow('calculator')">
+            <div class="icon-image">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect x="7" y="5" width="18" height="22" rx="2" fill="#34495e"/>
+                    <rect x="9" y="7" width="14" height="5" rx="1" fill="#2ecc71"/>
+                    <circle cx="11" cy="16" r="1.5" fill="#ecf0f1"/>
+                    <circle cx="16" cy="16" r="1.5" fill="#ecf0f1"/>
+                    <circle cx="21" cy="16" r="1.5" fill="#ecf0f1"/>
+                    <circle cx="11" cy="21" r="1.5" fill="#ecf0f1"/>
+                    <circle cx="16" cy="21" r="1.5" fill="#ecf0f1"/>
+                    <circle cx="21" cy="21" r="1.5" fill="#ecf0f1"/>
+                </svg>
+            </div>
+            <div class="icon-label">Calculadora</div>
         </div>
     </div>
 
@@ -1138,6 +1227,46 @@
         </div>
     </div>
 
+    <!-- Ventana Calculadora -->
+    <div class="window" id="calculator" style="width: 400px; top: 100px; left: 300px;">
+        <div class="window-header">
+            <span class="window-title">🔢 Calculadora</span>
+            <div class="window-controls">
+                <button class="window-btn btn-minimize" onclick="minimizeWindow('calculator')">_</button>
+                <button class="window-btn btn-maximize" onclick="maximizeWindow('calculator')">□</button>
+                <button class="window-btn btn-close" onclick="closeWindow('calculator')">×</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="calculator-display" id="calcDisplay">0</div>
+            <div class="calculator-buttons">
+                <button class="calc-btn clear" onclick="calcClear()">C</button>
+                <button class="calc-btn operator" onclick="calcInput('/')">/</button>
+                <button class="calc-btn operator" onclick="calcInput('*')">×</button>
+                <button class="calc-btn operator" onclick="calcBackspace()">←</button>
+                
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn operator" onclick="calcInput('-')">-</button>
+                
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn operator" onclick="calcInput('+')">+</button>
+                
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                <button class="calc-btn operator" onclick="calcInput('%')">%</button>
+                
+                <button class="calc-btn" onclick="calcInput('0')">0</button>
+                <button class="calc-btn" onclick="calcInput('.')">.</button>
+                <button class="calc-btn equals" onclick="calcEquals()">=</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Barra de tareas -->
     <div class="taskbar">
         <button class="start-btn" onclick="toggleStartMenu()">
@@ -1181,6 +1310,10 @@
             <div class="start-menu-item" onclick="openWindow('notepad'); toggleStartMenu();">
                 <span style="font-size: 20px;">📝</span>
                 <span>Editor de Texto</span>
+            </div>
+            <div class="start-menu-item" onclick="openWindow('calculator'); toggleStartMenu();">
+                <span style="font-size: 20px;">🔢</span>
+                <span>Calculadora</span>
             </div>
         </div>
         <div class="start-menu-footer">
@@ -1616,6 +1749,91 @@
         document.getElementById('textEditor').addEventListener('keydown', (e) => {
             e.stopPropagation();
         });
+
+        // ===== CALCULATOR FUNCTIONS =====
+        let calcCurrentInput = '0';
+        let calcPreviousInput = '';
+        let calcOperation = '';
+        let calcShouldResetDisplay = false;
+
+        function updateCalcDisplay() {
+            document.getElementById('calcDisplay').textContent = calcCurrentInput;
+        }
+
+        function calcInput(value) {
+            if (calcShouldResetDisplay) {
+                calcCurrentInput = '';
+                calcShouldResetDisplay = false;
+            }
+
+            if (value === '.' && calcCurrentInput.includes('.')) return;
+            
+            if (['+', '-', '*', '/', '%'].includes(value)) {
+                if (calcOperation && calcPreviousInput) {
+                    calcEquals();
+                }
+                calcOperation = value;
+                calcPreviousInput = calcCurrentInput;
+                calcShouldResetDisplay = true;
+            } else {
+                if (calcCurrentInput === '0' && value !== '.') {
+                    calcCurrentInput = value;
+                } else {
+                    calcCurrentInput += value;
+                }
+            }
+            
+            updateCalcDisplay();
+        }
+
+        function calcEquals() {
+            if (!calcOperation || !calcPreviousInput) return;
+            
+            const prev = parseFloat(calcPreviousInput);
+            const current = parseFloat(calcCurrentInput);
+            let result;
+            
+            switch(calcOperation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = current !== 0 ? prev / current : 'Error';
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+            }
+            
+            calcCurrentInput = result.toString();
+            calcOperation = '';
+            calcPreviousInput = '';
+            calcShouldResetDisplay = true;
+            updateCalcDisplay();
+        }
+
+        function calcClear() {
+            calcCurrentInput = '0';
+            calcPreviousInput = '';
+            calcOperation = '';
+            calcShouldResetDisplay = false;
+            updateCalcDisplay();
+        }
+
+        function calcBackspace() {
+            if (calcCurrentInput.length > 1) {
+                calcCurrentInput = calcCurrentInput.slice(0, -1);
+            } else {
+                calcCurrentInput = '0';
+            }
+            updateCalcDisplay();
+        }
     </script>
 </body>
 </html>
